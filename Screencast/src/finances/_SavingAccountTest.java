@@ -1,4 +1,4 @@
-package screencast;
+package finances;
 
 import static org.junit.Assert.*;
 
@@ -20,6 +20,14 @@ public class _SavingAccountTest {
 		SavingAccount account  = new SavingAccount();
 		account.withdraw(7500);
 		assertEquals(-7500,account.balance());
+	}
+	
+	@Test
+	public void nextYear() {
+		SavingAccount account = new SavingAccount();
+		account.deposit(10000);
+		SavingAccount nextYear = account.nextYear(10);
+		assertEquals(11000,nextYear.balance());
 	}
 
 }
