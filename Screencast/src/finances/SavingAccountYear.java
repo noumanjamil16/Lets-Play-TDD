@@ -6,6 +6,7 @@ public class SavingAccountYear {
 	private int startingBalance = 0;
 	private int interestRate = 0;
 	private int capitalGainsAmount = 0;
+	private int startingPrincipal = 0;
 	int totalWithdrawn = 0;
 	
 	
@@ -18,10 +19,11 @@ public class SavingAccountYear {
 		this.interestRate = interestRate;
 	}
 	
-	public SavingAccountYear(int startingBalance,int capitalGainsAmount, int interestRate) {
+	public SavingAccountYear(int startingBalance,int startingPrincipal, int interestRate) {
 		this.startingBalance = startingBalance;
 		this.interestRate = interestRate;
-		this.capitalGainsAmount = capitalGainsAmount;
+		this.startingPrincipal = startingPrincipal;
+		this.capitalGainsAmount = startingBalance - startingPrincipal;
 	}
 	
 	public int startingBalance() {
@@ -29,16 +31,18 @@ public class SavingAccountYear {
 	}
 	
 	public int startingPrincipal() {
+		System.out.println("starting balance : " + startingBalance);
+		System.out.println("Capital Gains : " + capitalGainsAmount);
 		return startingBalance - capitalGainsAmount;
 	}
 	
 	public int endingPrincipal() {
-		int result = startingPrincipal() - totalWithdrawn;
-		return (result < 0) ? 0 : result;
+		int result = startingPrincipal() - totalWithdrawn();
+		return Math.max(0, result);
 	}
 	
-	public int endingBalance() {
-		int modifiedStart = startingBalance - totalWithdrawn;
+	public int endingBalance(int capitalGainsTaxRate) {
+		int modifiedStart = startingBalance - totalWithdrawn() - capitalGainsTaxIncurred(capitalGainsTaxRate);
 		return modifiedStart + (modifiedStart * interestRate/100) ;
 	}
 
@@ -51,8 +55,21 @@ public class SavingAccountYear {
 		return interestRate;
 	}
 
-	public SavingAccountYear nextYear() {
-		return new SavingAccountYear(this.endingBalance(),interestRate);
+	public SavingAccountYear nextYear(int capitalGainsNextYear) {
+		return new SavingAccountYear(this.endingBalance(capitalGainsNextYear),interestRate);
+	}
+
+	public int totalWithdrawn() {
+		return totalWithdrawn;
+	}
+
+	public int capitalGainsWithDrawn() {
+		int result = -1 * (startingPrincipal() - totalWithdrawn());
+		return Math.max(0, result);
+	}
+
+	public int capitalGainsTaxIncurred(int taxRate) {
+		return capitalGainsWithDrawn() * taxRate/100;
 	}
 	
 	
