@@ -91,21 +91,22 @@ public class _SavingAccountYearTest {
 	}
 	
 	@Test
-	public void capitalGainTaxInurred() {
+	public void capitalGainTaxInurred_NeedsToCover() {
 		SavingAccountYear year  = new SavingAccountYear(10000,3000,10);
 		year.withdraw(5000);
 		assertEquals(2000,year.capitalGainsWithDrawn());
-		assertEquals(500,year.capitalGainsTaxIncurred(25));
+		assertEquals(666,year.capitalGainsTaxIncurred(25));
 	}
 	
 	@Test
 	public void capitalGaisTaxIncludedInEndingBalance() {
 		SavingAccountYear year = new SavingAccountYear(10000,3000,10);
-		year.withdraw(5000);
-		assertEquals(500, year.capitalGainsTaxIncurred(25));
-		assertEquals(10000-5000-500+450,year.endingBalance(25));
-	
-		// TODO: Need to withdraw enough money to cover capital gains tax; that money will also be taxed
+		int amountWithDrawn = 5000;
+		year.withdraw(amountWithDrawn);
+		int expectedGainTax = 666;
+		assertEquals(expectedGainTax, year.capitalGainsTaxIncurred(25));
+		int expectedStartingBalanceAfterWithdraw = 10000 - amountWithDrawn - expectedGainTax;
+		assertEquals((int)(expectedStartingBalanceAfterWithdraw * 1.10),year.endingBalance(25));
 	
 	}
 	
